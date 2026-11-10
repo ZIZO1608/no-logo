@@ -66,3 +66,195 @@ html[lang="ar"] .label:not(.latin) {
     animation: none;
   }
 }
+
+/* ---------- Branded scrollbar ---------- */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-paper) var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-paper);
+}
+
+/* Thin line under the header that fills as the page scrolls. */
+.scroll-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root);
+  }
+
+  [dir="rtl"] .scroll-progress {
+    transform-origin: right;
+  }
+
+  /* Hero picture or video drifts and darkens slightly as it scrolls away. */
+  .hero-media {
+    animation: hero-drift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100svh;
+  }
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hero-drift {
+  to {
+    transform: translateY(12%) scale(1.12);
+    opacity: 0.55;
+  }
+}
+
+/* ---------- Scroll and text reveals ----------
+   Only active once the inline script has added "js" to <html>,
+   so the page stays readable if scripts never run. */
+
+html.js [data-reveal="fade"] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--intro-delay, 0s) + var(--reveal-delay, 0ms));
+}
+
+html.js [data-reveal="fade"].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for Arabic marks and descenders inside the clipping box. */
+  padding-block: 0.22em;
+  margin-block: -0.22em;
+}
+
+.split-word > span {
+  display: inline-block;
+}
+
+html.js [data-reveal="split"] .split-word > span {
+  transform: translateY(125%);
+  transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--intro-delay, 0s) + var(--i, 0) * 70ms);
+}
+
+html.js [data-reveal="split"].is-visible .split-word > span {
+  transform: none;
+}
+
+/* ---------- Intro loading screen (first visit of a session) ---------- */
+
+.intro-screen {
+  display: none;
+}
+
+html.intro {
+  --intro-delay: 1.9s;
+}
+
+html.intro .intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  animation: intro-out 0.8s cubic-bezier(0.7, 0, 0.2, 1) 1.7s forwards;
+}
+
+.intro-mark circle,
+.intro-mark line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+html.intro .intro-mark circle {
+  animation: intro-draw 0.9s cubic-bezier(0.6, 0, 0.2, 1) 0.1s forwards;
+}
+
+html.intro .intro-mark line {
+  animation: intro-draw 0.5s cubic-bezier(0.6, 0, 0.2, 1) 0.8s forwards;
+}
+
+.intro-bar {
+  width: min(52vw, 220px);
+  height: 2px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.intro-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--color-paper);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+html.intro .intro-bar > span {
+  animation: scroll-progress 1.5s cubic-bezier(0.6, 0, 0.2, 1) 0.1s forwards;
+}
+
+@keyframes intro-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes intro-out {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.intro {
+    --intro-delay: 0s;
+  }
+
+  html.intro .intro-screen {
+    display: none;
+  }
+
+  html.js [data-reveal="fade"],
+  html.js [data-reveal="split"] .split-word > span {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hero-media,
+  .scroll-progress {
+    animation: none;
+  }
+}

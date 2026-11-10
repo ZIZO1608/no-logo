@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 
 const COOKIE_NAME = "nologo_admin";
 const SESSION_HOURS = 12;
@@ -45,6 +46,9 @@ export const endAdminSession = async () => {
 };
 
 export const isAdmin = async (): Promise<boolean> => {
+  // The session depends on the current time, so it is always checked per request, never prerendered.
+  await connection();
+
   const secret = process.env.SESSION_SECRET;
   const token = (await cookies()).get(COOKIE_NAME)?.value;
   if (!secret || !token) return false;

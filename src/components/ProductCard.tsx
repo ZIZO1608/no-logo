@@ -2,12 +2,18 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 import { formatPrice, type Product } from "@/lib/products";
 import { GarmentArt } from "./GarmentArt";
+import { reveal, staggerStyle } from "./Motion";
 
-type Props = { product: Product; lang: Locale; newLabel: string };
+type Props = { product: Product; lang: Locale; newLabel: string; index?: number };
 
-export function ProductCard({ product, lang, newLabel }: Props) {
+export function ProductCard({ product, lang, newLabel, index = 0 }: Props) {
   return (
-    <Link href={`/${lang}/product/${product.id}`} className="group block">
+    <Link
+      href={`/${lang}/product/${product.id}`}
+      {...reveal("fade")}
+      style={staggerStyle(index)}
+      className="group block"
+    >
       <div className="relative overflow-hidden">
         <GarmentArt
           garment={product.garment}

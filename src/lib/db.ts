@@ -31,6 +31,10 @@ const SCHEMA = `
     unit_price INTEGER NOT NULL CHECK (unit_price >= 0)
   );
   CREATE INDEX IF NOT EXISTS order_items_order_id ON order_items(order_id);
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
 `;
 
 // Keep one connection across hot reloads in development.
@@ -47,7 +51,28 @@ const getDb = (): DatabaseSync => {
   return db;
 };
 
-export const orderStatuses = ["new", "confirmed", "delivered", "cancelled"] as const;
+export const UPLOADS_DIR = path.join(DATA_DIR, "uploads");
+
+export const readSetting = (key: string): string | null => {
+  const row = getDb().prepare("SELECT value FROM settings WHERE key = ?").get(key) as
+    | { value: string }
+    | undefined;
+  return row?.value ?? null;
+};
+
+export const writeSetting = (key: string, value: string | null): void => {
+  const db = getDb();
+  if (value === null) {
+    db.prepare("DELETE FROM settings WHERE key = ?").run(key);
+    return;
+  }
+  db.prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(
+    key,
+    value,
+  );
+};
+
+export const orderStatuses =["new", "confirmed", "delivered", "cancelled"] as const;
 export type OrderStatus = (typeof orderStatuses)[number];
 
 export const isOrderStatus = (value: unknown): value is OrderStatus =>

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { BagDrawer } from "@/components/BagDrawer";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { BootScript, IntroScreen } from "@/components/Motion";
+import { RevealObserver } from "@/components/RevealObserver";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import "../globals.css";
 
@@ -35,8 +37,17 @@ export default async function LangLayout({ children, params }: LayoutProps<"/[la
   const dict = getDictionary(lang);
 
   return (
-    <html lang={lang} dir={dict.dir} className={`${archivo.variable} ${plexArabic.variable} antialiased`}>
+    <html
+      lang={lang}
+      dir={dict.dir}
+      className={`${archivo.variable} ${plexArabic.variable} antialiased`}
+      // The boot script adds classes to <html> before React loads.
+      suppressHydrationWarning
+    >
       <body className="flex min-h-dvh flex-col">
+        <BootScript />
+        <IntroScreen />
+        <RevealObserver />
         <p className="label bg-paper px-4 py-2 text-center text-ink">{dict.announce}</p>
         <Header lang={lang} nav={dict.nav} />
         <main className="flex-1">{children}</main>

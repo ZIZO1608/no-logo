@@ -72,6 +72,8 @@ export function Header({ lang, nav }: Props) {
         </div>
       </div>
 
+      <span aria-hidden="true" className="scroll-progress absolute inset-x-0 -bottom-px h-0.5 bg-paper" />
+
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 flex h-dvh flex-col bg-ink px-4 md:hidden">
           <div className="flex h-14 items-center justify-between">

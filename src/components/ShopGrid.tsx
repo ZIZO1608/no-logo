@@ -94,8 +94,8 @@ export function ShopGrid({ lang, shop, categoryLabels, newLabel }: Props) {
         <p className="py-24 text-center text-ash">{shop.empty}</p>
       ) : (
         <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-4 md:gap-x-5 md:gap-y-12">
-          {visible.map((product) => (
-            <ProductCard key={product.id} product={product} lang={lang} newLabel={newLabel} />
+          {visible.map((product, index) => (
+            <ProductCard key={product.id} product={product} lang={lang} newLabel={newLabel} index={index % 4} />
           ))}
         </div>
       )}

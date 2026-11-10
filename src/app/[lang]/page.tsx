@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { GarmentArt } from "@/components/GarmentArt";
 import { Hero } from "@/components/Hero";
 import { Marquee } from "@/components/Marquee";
+import { reveal, SplitText, staggerStyle } from "@/components/Motion";
 import { ProductCard } from "@/components/ProductCard";
+import { getHeroMedia } from "@/lib/hero";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, getDictionary, isLocale } from "@/lib/i18n";
 import { products, type Category, type Garment } from "@/lib/products";
 
@@ -14,6 +16,8 @@ const categoryTiles: { key: Category; garment: Garment }[] = [
   { key: "caps", garment: "cap" },
 ];
 
+const HEADING_CLASS = "text-3xl font-bold uppercase leading-none tracking-tight md:text-5xl";
+
 // The page is fully prerendered per language; it only reads `lang` from the URL.
 export const instant = false;
 
@@ -22,18 +26,21 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   if (!isLocale(lang)) notFound();
 
   const dict = getDictionary(lang);
+  const heroMedia = await getHeroMedia();
 
   return (
     <>
-      <Hero hero={dict.hero} />
+      <Hero lang={lang} hero={dict.hero} media={heroMedia} />
       <Marquee />
 
       <section id="drop" className="mx-auto max-w-[1600px] scroll-mt-16 px-4 py-14 md:px-8 md:py-24">
         <div className="flex items-end justify-between">
           <div>
-            <p className="label text-ash">{dict.drop.kicker}</p>
-            <h2 className="mt-2 text-3xl font-bold uppercase leading-none tracking-tight md:text-5xl">
-              {dict.drop.title}
+            <p {...reveal("fade")} className="label text-ash">
+              {dict.drop.kicker}
+            </p>
+            <h2 {...reveal("split")} className={`mt-2 ${HEADING_CLASS}`}>
+              <SplitText text={dict.drop.title} />
             </h2>
           </div>
           <Link
@@ -44,22 +51,30 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </Link>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:mt-12 md:grid-cols-4 md:gap-x-5 md:gap-y-12">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} lang={lang} newLabel={dict.drop.isNew} />
+          {products.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              lang={lang}
+              newLabel={dict.drop.isNew}
+              index={index % 4}
+            />
           ))}
         </div>
       </section>
 
       <section id="categories" className="scroll-mt-16 border-t border-line">
         <div className="mx-auto max-w-[1600px] px-4 py-14 md:px-8 md:py-24">
-          <h2 className="text-3xl font-bold uppercase leading-none tracking-tight md:text-5xl">
-            {dict.categories.title}
+          <h2 {...reveal("split")} className={HEADING_CLASS}>
+            <SplitText text={dict.categories.title} />
           </h2>
           <div className="mt-8 grid grid-cols-2 gap-3 md:mt-12 md:grid-cols-4 md:gap-5">
             {categoryTiles.map((tile, index) => (
               <Link
                 key={tile.key}
                 href={`/${lang}/shop?category=${tile.key}`}
+                {...reveal("fade")}
+                style={staggerStyle(index)}
                 className="group relative block overflow-hidden"
               >
                 <GarmentArt
@@ -81,15 +96,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       <section id="order" className="scroll-mt-16 bg-paper text-ink">
         <div className="mx-auto max-w-[1600px] px-4 py-14 md:px-8 md:py-24">
-          <h2 className="text-3xl font-bold uppercase leading-none tracking-tight md:text-5xl">
-            {dict.order.title}
+          <h2 {...reveal("split")} className={HEADING_CLASS}>
+            <SplitText text={dict.order.title} />
           </h2>
           <ol className="mt-8 grid gap-px bg-ink/15 md:mt-12 md:grid-cols-3">
             {dict.order.steps.map((step, index) => (
               <li key={step.title} className="bg-paper py-6 md:px-6 md:py-2 md:first:ps-0">
-                <p className="latin text-5xl font-black leading-none md:text-7xl">0{index + 1}</p>
-                <h3 className="mt-4 text-lg font-bold uppercase leading-6">{step.title}</h3>
-                <p className="mt-1 max-w-xs text-sm leading-6 text-ink/70">{step.body}</p>
+                <div {...reveal("fade")} style={staggerStyle(index, 120)}>
+                  <p className="latin text-5xl font-black leading-none md:text-7xl">0{index + 1}</p>
+                  <h3 className="mt-4 text-lg font-bold uppercase leading-6">{step.title}</h3>
+                  <p className="mt-1 max-w-xs text-sm leading-6 text-ink/70">{step.body}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -97,14 +114,17 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       </section>
 
       <section className="mx-auto flex max-w-[1600px] flex-col items-center px-4 py-16 text-center md:px-8 md:py-28">
-        <p className="label text-ash">{dict.instagram.body}</p>
-        <h2 className="mt-3 text-3xl font-bold uppercase leading-none tracking-tight md:text-5xl">
-          {dict.instagram.title}
+        <p {...reveal("fade")} className="label text-ash">
+          {dict.instagram.body}
+        </p>
+        <h2 {...reveal("split")} className={`mt-3 ${HEADING_CLASS}`}>
+          <SplitText text={dict.instagram.title} />
         </h2>
         <a
           href={INSTAGRAM_URL}
           target="_blank"
           rel="noreferrer"
+          {...reveal("fade")}
           className="label mt-8 inline-flex h-12 items-center justify-center gap-2 border border-paper px-8 transition-colors hover:bg-paper hover:text-ink"
         >
           {dict.instagram.cta} <span className="latin">{INSTAGRAM_HANDLE}</span>

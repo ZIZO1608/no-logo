@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { logout } from "@/app/actions/admin";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import { OrderCard } from "@/components/admin/OrderCard";
-import { LogoBadge } from "@/components/Logo";
+import { BrandLoader } from "@/components/Motion";
 import { statusLabels } from "@/lib/admin";
 import { requireAdmin } from "@/lib/admin-auth";
 import { countOrdersByStatus, isOrderStatus, listOrders, orderStatuses } from "@/lib/db";
@@ -13,19 +13,9 @@ export const instant = false;
 export default function AdminPage({ searchParams }: PageProps<"/admin">) {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 md:py-10">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <LogoBadge className="h-10 w-10" />
-          <h1 className="text-2xl font-bold leading-none">الطلبات</h1>
-        </div>
-        <form action={logout}>
-          <button type="submit" className="px-2 py-3 text-sm text-ash underline underline-offset-4 hover:text-paper">
-            تسجيل الخروج
-          </button>
-        </form>
-      </header>
+      <AdminHeader active="orders" />
 
-      <Suspense fallback={<p className="py-24 text-center text-ash">جارٍ تحميل الطلبات…</p>}>
+      <Suspense fallback={<BrandLoader label="جارٍ تحميل الطلبات" />}>
         <Orders searchParams={searchParams} />
       </Suspense>
     </div>
