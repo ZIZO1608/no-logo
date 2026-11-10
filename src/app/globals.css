@@ -167,61 +167,178 @@ html.js [data-reveal="split"].is-visible .split-word > span {
   transform: none;
 }
 
-/* ---------- Intro loading screen (first visit of a session) ---------- */
+/* ---------- Intro loading screen (first visit of a session) ----------
+   The ring draws, the slash strikes through it, then the slash becomes a cut
+   across the whole screen and the two halves slide apart to reveal the site. */
+
+@property --intro-n {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
 
 .intro-screen {
   display: none;
 }
 
 html.intro {
-  --intro-delay: 1.9s;
+  /* Page reveals start as the screen splits open. */
+  --intro-delay: 2.1s;
 }
 
 html.intro .intro-screen {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.75rem;
-  background: var(--color-ink);
+  display: block;
+  overflow: hidden;
   color: var(--color-paper);
-  animation: intro-out 0.8s cubic-bezier(0.7, 0, 0.2, 1) 1.7s forwards;
+  /* Lets the pieces below measure the screen with cqw / cqh. */
+  container-type: size;
+  /* Where the 45° line through the screen centre meets the top and left edges. */
+  --cut: calc(50cqw + 50cqh);
+  /* How far each half must travel, on both axes, to leave the screen. */
+  --travel: calc(25cqw + 25cqh + 4px);
+  animation: intro-done 0s linear 3s forwards;
 }
 
-.intro-mark circle,
+/* Two black halves that meet on the same 45° line as the logo's slash. The 2px overlap hides the seam. */
+.intro-panel {
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  will-change: transform;
+}
+
+.intro-panel-a {
+  clip-path: polygon(0 0, calc(var(--cut) + 2px) 0, 0 calc(var(--cut) + 2px));
+}
+
+.intro-panel-b {
+  clip-path: polygon(
+    calc(var(--cut) - 2px) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 calc(var(--cut) - 2px)
+  );
+}
+
+html.intro .intro-panel-a {
+  animation: intro-split-a 0.9s cubic-bezier(0.76, 0, 0.18, 1) 2s forwards;
+}
+
+html.intro .intro-panel-b {
+  animation: intro-split-b 0.9s cubic-bezier(0.76, 0, 0.18, 1) 2s forwards;
+}
+
+/* The cut: the slash keeps going, out of the logo in both directions, until it crosses the screen. */
+.intro-cut {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vmax;
+  height: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(-45deg) scaleX(0);
+}
+
+html.intro .intro-cut {
+  animation:
+    intro-cut 0.45s cubic-bezier(0.7, 0, 0.2, 1) 1.55s forwards,
+    intro-fade 0.3s linear 2.05s forwards;
+}
+
+.intro-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-mark {
+  width: min(38vw, 190px);
+  height: min(38vw, 190px);
+  overflow: visible;
+}
+
+html.intro .intro-mark {
+  animation:
+    intro-punch 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) 1.2s both,
+    intro-mark-out 0.35s cubic-bezier(0.7, 0, 0.8, 0.3) 1.85s forwards;
+}
+
 .intro-mark line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
 
+/* The dash is slightly longer than the ring so no hairline gap is left where it closes. */
+.intro-mark circle {
+  stroke-dasharray: 1.05 1;
+  stroke-dashoffset: 1.05;
+}
+
+.intro-mark circle {
+  transform-origin: 50px 50px;
+}
+
 html.intro .intro-mark circle {
-  animation: intro-draw 0.9s cubic-bezier(0.6, 0, 0.2, 1) 0.1s forwards;
+  animation: intro-ring 1s cubic-bezier(0.65, 0, 0.2, 1) 0.15s forwards;
 }
 
 html.intro .intro-mark line {
-  animation: intro-draw 0.5s cubic-bezier(0.6, 0, 0.2, 1) 0.8s forwards;
+  animation: intro-draw 0.22s cubic-bezier(0.9, 0, 1, 0.6) 1.02s forwards;
 }
 
-.intro-bar {
-  width: min(52vw, 220px);
-  height: 2px;
-  background: var(--color-line);
-  overflow: hidden;
+.intro-count,
+.intro-word {
+  position: absolute;
+  bottom: 1.25rem;
+  font-family: var(--font-latin);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
-.intro-bar > span {
-  display: block;
-  height: 100%;
-  background: var(--color-paper);
-  transform: scaleX(0);
-  transform-origin: left;
+.intro-count {
+  inset-inline-start: 1.25rem;
+  font-size: clamp(3rem, 14vw, 7rem);
+  font-variant-numeric: tabular-nums;
+  counter-reset: intro var(--intro-n);
 }
 
-html.intro .intro-bar > span {
-  animation: scroll-progress 1.5s cubic-bezier(0.6, 0, 0.2, 1) 0.1s forwards;
+.intro-count::after {
+  content: counter(intro, decimal-leading-zero);
+}
+
+.intro-word {
+  inset-inline-end: 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+html.intro .intro-count {
+  animation:
+    intro-count 1.45s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards,
+    intro-fade 0.25s linear 1.85s forwards;
+}
+
+html.intro .intro-word {
+  animation: intro-fade 0.25s linear 1.85s forwards;
+}
+
+@keyframes intro-ring {
+  from {
+    stroke-dashoffset: 1.05;
+    transform: rotate(-200deg);
+  }
+  to {
+    stroke-dashoffset: 0;
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes intro-draw {
@@ -230,9 +347,58 @@ html.intro .intro-bar > span {
   }
 }
 
-@keyframes intro-out {
+@keyframes intro-punch {
+  from {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12) rotate(-3deg);
+  }
   to {
-    transform: translateY(-100%);
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-mark-out {
+  to {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes intro-count {
+  to {
+    --intro-n: 100;
+  }
+}
+
+@keyframes intro-cut {
+  to {
+    transform: translate(-50%, -50%) rotate(-45deg) scaleX(1);
+  }
+}
+
+@keyframes intro-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Each half slides away at right angles to the cut. */
+@keyframes intro-split-a {
+  to {
+    transform: translate3d(calc(-1 * var(--travel)), calc(-1 * var(--travel)), 0);
+  }
+}
+
+@keyframes intro-split-b {
+  to {
+    transform: translate3d(var(--travel), var(--travel), 0);
+  }
+}
+
+@keyframes intro-done {
+  to {
     visibility: hidden;
   }
 }

@@ -11,17 +11,24 @@ export function BootScript() {
   return <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />;
 }
 
-/** Full-screen intro: the mark draws itself, a bar fills, then the screen slides away. CSS only. */
+/**
+ * Full-screen intro, CSS only: the ring draws while a counter runs to 100, the slash strikes
+ * through it, then the slash cuts the whole screen and the two halves slide apart.
+ */
 export function IntroScreen() {
   return (
     <div className="intro-screen" aria-hidden="true">
-      <svg viewBox="0 0 100 100" className="intro-mark h-24 w-24 md:h-32 md:w-32">
-        <circle cx="50" cy="50" r="27" pathLength={1} fill="none" stroke="currentColor" strokeWidth="15" />
-        <line x1="15.4" y1="84.6" x2="84.6" y2="15.4" pathLength={1} stroke="currentColor" strokeWidth="13" />
-      </svg>
-      <div className="intro-bar">
-        <span />
+      <div className="intro-panel intro-panel-a" />
+      <div className="intro-panel intro-panel-b" />
+      <div className="intro-cut" />
+      <div className="intro-center">
+        <svg viewBox="0 0 100 100" className="intro-mark">
+          <circle cx="50" cy="50" r="27" pathLength={1} fill="none" stroke="currentColor" strokeWidth="15" />
+          <line x1="15.4" y1="84.6" x2="84.6" y2="15.4" pathLength={1} stroke="currentColor" strokeWidth="13" />
+        </svg>
       </div>
+      <p className="intro-count" />
+      <p className="intro-word">NO LOGO™</p>
     </div>
   );
 }

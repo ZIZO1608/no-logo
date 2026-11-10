@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const INTRO_MS = 2600;
+// A little longer than the intro animation in globals.css (ends at 3s).
+const INTRO_MS = 3100;
 
 /** Marks every [data-reveal] element as visible when it scrolls into view. Mount once per layout. */
 export function RevealObserver() {
