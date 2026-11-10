@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: #0c0c0c;
+  --color-coal: #151515;
+  --color-line: #2a2a2a;
+  --color-ash: #8d8f8f;
+  --color-paper: #e6e8e8;
+  --color-chalk: #d5d7d7;
+  --font-latin: var(--font-archivo), system-ui, sans-serif;
+  --font-arabic: var(--font-plex-arabic), system-ui, sans-serif;
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-spin-slow: spin 40s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
   }
 }
 
+html {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-latin);
+}
+
+html[lang="ar"] body {
+  font-family: var(--font-arabic);
+}
+
+/* Brand strings stay in the Latin face on Arabic pages. */
+.latin {
+  font-family: var(--font-latin);
+}
+
+/* Small uppercase label. Arabic letters must stay joined, so no tracking there. */
+.label {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+html[lang="ar"] .label:not(.latin) {
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-spin-slow {
+    animation: none;
+  }
 }
