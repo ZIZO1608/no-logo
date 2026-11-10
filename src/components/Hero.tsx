@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { HeroMedia } from "@/lib/hero";
 import type { Dictionary, Locale } from "@/lib/i18n";
+import { HeroLens } from "./HeroLens";
 import { HeroVideo } from "./HeroVideo";
 import { LogoMark } from "./Logo";
 import { reveal, SplitText } from "./Motion";
@@ -11,6 +12,10 @@ const RING_LENGTH = Math.round(2 * Math.PI * 184);
 
 // Screen height minus the announcement bar (two lines on small phones) and the header.
 const SECTION_HEIGHT = "min-h-[calc(100svh-7rem)] md:min-h-[calc(100svh-6rem)]";
+
+// The giant wordmark behind the badge. The lens draws a second copy in negative, so both must match exactly.
+const WORDMARK =
+  "latin pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none whitespace-nowrap text-center text-[23vw] font-black uppercase leading-none tracking-tighter";
 
 /** The Ø badge with the brand line rotating around it. */
 function RingBadge({ className }: { className: string }) {
@@ -89,13 +94,10 @@ export function Hero({ lang, hero, media }: Props) {
   return (
     <section className={`relative flex flex-col overflow-hidden ${SECTION_HEIGHT}`}>
       <div className="relative flex flex-1 items-center justify-center px-4 py-10">
-        <p
-          dir="ltr"
-          aria-hidden="true"
-          className="latin pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none whitespace-nowrap text-center text-[23vw] font-black uppercase leading-none tracking-tighter text-coal"
-        >
+        <p dir="ltr" aria-hidden="true" className={`${WORDMARK} text-coal`}>
           NO LOGO
         </p>
+        <HeroLens text="NO LOGO" textClassName={`${WORDMARK} text-ink`} />
         <RingBadge className="relative w-[min(78vw,56svh,520px)]" />
       </div>
 

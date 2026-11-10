@@ -126,6 +126,79 @@ html {
   }
 }
 
+/* ---------- Hero lens ----------
+   A paper disc with the logo's slash that shows the wordmark in negative.
+   It drifts on its own; HeroLens.tsx makes it follow the pointer instead. */
+
+@property --lens-x {
+  syntax: "<length-percentage>";
+  initial-value: 50%;
+  inherits: true;
+}
+
+@property --lens-y {
+  syntax: "<length-percentage>";
+  initial-value: 50%;
+  inherits: true;
+}
+
+.hero-lens {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --lens-r: clamp(64px, 13vw, 170px);
+  animation: lens-drift 18s ease-in-out infinite alternate;
+}
+
+.hero-lens[data-live] {
+  animation: none;
+  transition:
+    --lens-x 0.18s ease-out,
+    --lens-y 0.18s ease-out;
+}
+
+.hero-lens-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-paper);
+  clip-path: circle(var(--lens-r) at var(--lens-x) var(--lens-y));
+}
+
+.hero-lens-slash {
+  position: absolute;
+  left: var(--lens-x);
+  top: var(--lens-y);
+  width: calc(var(--lens-r) * 2.6);
+  height: max(3px, calc(var(--lens-r) * 0.05));
+  background: var(--color-ink);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@keyframes lens-drift {
+  from {
+    --lens-x: 16%;
+    --lens-y: 34%;
+  }
+  33% {
+    --lens-x: 80%;
+    --lens-y: 64%;
+  }
+  66% {
+    --lens-x: 30%;
+    --lens-y: 72%;
+  }
+  to {
+    --lens-x: 86%;
+    --lens-y: 28%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lens {
+    display: none;
+  }
+}
+
 /* ---------- Scroll and text reveals ----------
    Only active once the inline script has added "js" to <html>,
    so the page stays readable if scripts never run. */

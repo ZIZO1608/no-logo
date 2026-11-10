@@ -4,8 +4,9 @@ import { LogoMark } from "./Logo";
 /**
  * Runs before first paint. Adds "js" so reveal styles only apply when scripts work,
  * and "intro" on the first page load of a browser session to show the intro screen.
+ * Adding ?intro to any address replays it.
  */
-const BOOT_SCRIPT = `(function(){var d=document.documentElement;d.classList.add("js");try{if(!sessionStorage.getItem("nologo-intro")){sessionStorage.setItem("nologo-intro","1");d.classList.add("intro")}}catch(e){}})()`;
+const BOOT_SCRIPT = `(function(){var d=document.documentElement;d.classList.add("js");var r=/[?&]intro\\b/.test(location.search);try{if(!sessionStorage.getItem("nologo-intro")){sessionStorage.setItem("nologo-intro","1");r=true}}catch(e){}if(r)d.classList.add("intro")})()`;
 
 export function BootScript() {
   return <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />;
