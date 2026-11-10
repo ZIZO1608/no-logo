@@ -3,7 +3,8 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// NOLOGO_DATA_DIR lets a production build run against an empty folder, so local test data is never baked into pages.
+const DATA_DIR = process.env.NOLOGO_DATA_DIR ?? path.join(process.cwd(), "data");
 const FIRST_ORDER_NUMBER = 1000;
 
 const SCHEMA = `
