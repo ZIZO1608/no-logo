@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import { categories, isCategory, products, type Product } from "@/lib/products";
+import { Dropdown } from "./Dropdown";
 import { ProductCard } from "./ProductCard";
 
 type SortKey = "newest" | "priceLow" | "priceHigh";
@@ -73,20 +74,12 @@ export function ShopGrid({ lang, shop, categoryLabels, newLabel }: Props) {
           <p className="label text-ash">
             <span className="latin tabular-nums">{visible.length}</span> {shop.items}
           </p>
-          <label className="label flex items-center gap-2 text-ash">
-            {shop.sort}
-            <select
-              value={activeSort}
-              onChange={(event) => setParam("sort", event.target.value === "newest" ? null : event.target.value)}
-              className="h-9 border border-line bg-ink px-2 text-paper"
-            >
-              {sortKeys.map((key) => (
-                <option key={key} value={key}>
-                  {shop[key]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Dropdown
+            label={shop.sort}
+            value={activeSort}
+            options={sortKeys.map((key) => ({ value: key, label: shop[key] }))}
+            onChange={(key) => setParam("sort", key === "newest" ? null : key)}
+          />
         </div>
       </div>
 

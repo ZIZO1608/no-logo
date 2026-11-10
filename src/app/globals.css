@@ -127,7 +127,7 @@ html {
 }
 
 /* ---------- Hero lens ----------
-   A paper disc with the logo's slash that shows the wordmark in negative.
+   The Ø mark in paper, showing the wordmark (or the hero picture) in negative.
    It drifts on its own; HeroLens.tsx makes it follow the pointer instead. */
 
 @property --lens-x {
@@ -146,7 +146,7 @@ html {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  --lens-r: clamp(64px, 13vw, 170px);
+  --lens-r: clamp(72px, 14vw, 190px);
   animation: lens-drift 18s ease-in-out infinite alternate;
 }
 
@@ -157,21 +157,20 @@ html {
     --lens-y 0.18s ease-out;
 }
 
+/* The paper layer is cut to the Ø mark: same ring and slash as LogoMark in Logo.tsx. */
 .hero-lens-fill {
   position: absolute;
   inset: 0;
   background: var(--color-paper);
-  clip-path: circle(var(--lens-r) at var(--lens-x) var(--lens-y));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='27' fill='none' stroke='%23000' stroke-width='15'/%3E%3Cline x1='15.4' y1='84.6' x2='84.6' y2='15.4' stroke='%23000' stroke-width='13'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-size: calc(var(--lens-r) * 2) calc(var(--lens-r) * 2);
+  mask-position: calc(var(--lens-x) - var(--lens-r)) calc(var(--lens-y) - var(--lens-r));
 }
 
-.hero-lens-slash {
-  position: absolute;
-  left: var(--lens-x);
-  top: var(--lens-y);
-  width: calc(var(--lens-r) * 2.6);
-  height: max(3px, calc(var(--lens-r) * 0.05));
-  background: var(--color-ink);
-  transform: translate(-50%, -50%) rotate(-45deg);
+/* Over a picture or video there is no wordmark to redraw, so the mark inverts what is under it. */
+.hero-lens-fill[data-blend] {
+  mix-blend-mode: difference;
 }
 
 @keyframes lens-drift {
@@ -196,6 +195,29 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .hero-lens {
     display: none;
+  }
+}
+
+/* ---------- Dropdown ----------
+   The list wipes open from its top edge, like a shutter. */
+
+.dropdown-list {
+  visibility: hidden;
+  clip-path: inset(0 0 100% 0);
+  transition:
+    clip-path 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 0.28s;
+}
+
+.dropdown-list.is-open {
+  visibility: visible;
+  clip-path: inset(0);
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-list {
+    transition: none;
   }
 }
 

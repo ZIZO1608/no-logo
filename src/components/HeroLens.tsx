@@ -2,12 +2,16 @@
 
 import { useEffect, useRef } from "react";
 
-type Props = { text: string; textClassName: string };
+type Props = {
+  /** The wordmark to redraw in negative inside the mark. Leave out over a picture or video. */
+  text?: string;
+  textClassName?: string;
+};
 
 /**
- * A paper-coloured disc with the logo's slash that roams over the hero and shows the big
- * wordmark in negative. It follows the pointer, and drifts on its own when there is none.
- * Place it inside the positioned box that holds the wordmark.
+ * The Ø mark, cut out of paper, roaming over the hero. Over the wordmark it shows the letters in
+ * negative; over a picture or video it inverts whatever is underneath. It follows the pointer,
+ * and drifts on its own when there is none. Place it inside the positioned box it should roam.
  */
 export function HeroLens({ text, textClassName }: Props) {
   const lensRef = useRef<HTMLDivElement>(null);
@@ -38,11 +42,12 @@ export function HeroLens({ text, textClassName }: Props) {
 
   return (
     <div ref={lensRef} className="hero-lens" aria-hidden="true">
-      <div className="hero-lens-fill">
-        <p dir="ltr" className={textClassName}>
-          {text}
-        </p>
-        <span className="hero-lens-slash" />
+      <div className="hero-lens-fill" data-blend={text ? undefined : "true"}>
+        {text && (
+          <p dir="ltr" className={textClassName}>
+            {text}
+          </p>
+        )}
       </div>
     </div>
   );

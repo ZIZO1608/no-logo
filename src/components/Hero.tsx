@@ -13,7 +13,7 @@ const RING_LENGTH = Math.round(2 * Math.PI * 184);
 // Screen height minus the announcement bar (two lines on small phones) and the header.
 const SECTION_HEIGHT = "min-h-[calc(100svh-7rem)] md:min-h-[calc(100svh-6rem)]";
 
-// The giant wordmark behind the badge. The lens draws a second copy in negative, so both must match exactly.
+// The giant wordmark behind the badge. The roaming mark draws a second copy in negative, so both must match exactly.
 const WORDMARK =
   "latin pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none whitespace-nowrap text-center text-[23vw] font-black uppercase leading-none tracking-tighter";
 
@@ -70,6 +70,7 @@ export function Hero({ lang, hero, media }: Props) {
           )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/25" />
+        <HeroLens />
 
         <RingBadge className="absolute end-4 top-4 w-24 md:end-8 md:top-8 md:w-36" />
 
