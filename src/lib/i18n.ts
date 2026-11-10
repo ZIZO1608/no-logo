@@ -109,6 +109,11 @@ const en = {
   },
   footer: {
     rights: "All rights reserved.",
+    shop: "Shop",
+    info: "Info",
+    follow: "Follow",
+    city: "Damascus",
+    top: "Back to top",
   },
 };
 
@@ -216,6 +221,11 @@ const ar: Dictionary = {
   },
   footer: {
     rights: "جميع الحقوق محفوظة.",
+    shop: "المتجر",
+    info: "معلومات",
+    follow: "تابعنا",
+    city: "دمشق",
+    top: "إلى الأعلى",
   },
 };
 

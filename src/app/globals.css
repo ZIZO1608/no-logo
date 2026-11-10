@@ -262,7 +262,28 @@ html.js [data-reveal="split"].is-visible .split-word > span {
   transform: none;
 }
 
-/* ---------- Intro loading screen (first visit of a session) ----------
+/* ---------- Footer ----------
+   On screens tall enough to show it whole, the footer stays pinned behind the page
+   and is uncovered as the page scrolls off it. */
+
+.footer-lens {
+  --lens-r: clamp(52px, 8.5vw, 125px);
+}
+
+@media (min-width: 768px) and (min-height: 800px) {
+  .site-main {
+    position: relative;
+    z-index: 1;
+    background: var(--color-ink);
+  }
+
+  .site-footer {
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+/* ---------- Intro loading screen (every full page load) ----------
    The ring draws, the slash strikes through it, then the slash becomes a cut
    across the whole screen and the two halves slide apart to reveal the site. */
 

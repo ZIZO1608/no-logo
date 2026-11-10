@@ -50,7 +50,7 @@ export default async function LangLayout({ children, params }: LayoutProps<"/[la
         <RevealObserver />
         <p className="label bg-paper px-4 py-2 text-center text-ink">{dict.announce}</p>
         <Header lang={lang} nav={dict.nav} />
-        <main className="flex-1">{children}</main>
+        <main className="site-main flex-1">{children}</main>
         <Footer lang={lang} dict={dict} />
         <BagDrawer lang={lang} bag={dict.bag} closeLabel={dict.nav.close} />
       </body>

@@ -98,7 +98,11 @@ export function Hero({ lang, hero, media }: Props) {
         <p dir="ltr" aria-hidden="true" className={`${WORDMARK} text-coal`}>
           NO LOGO
         </p>
-        <HeroLens text="NO LOGO" textClassName={`${WORDMARK} text-ink`} />
+        <HeroLens>
+          <p dir="ltr" className={`${WORDMARK} text-ink`}>
+            NO LOGO
+          </p>
+        </HeroLens>
         <RingBadge className="relative w-[min(78vw,56svh,520px)]" />
       </div>
 

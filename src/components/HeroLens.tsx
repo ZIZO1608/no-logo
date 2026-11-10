@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 type Props = {
-  /** The wordmark to redraw in negative inside the mark. Leave out over a picture or video. */
-  text?: string;
-  textClassName?: string;
+  /** A second copy of the wordmark, drawn in negative inside the mark. Leave out over a picture or video. */
+  children?: ReactNode;
+  className?: string;
 };
 
 /**
- * The Ø mark, cut out of paper, roaming over the hero. Over the wordmark it shows the letters in
+ * The Ø mark, cut out of paper, roaming over its box. Over a wordmark it shows the letters in
  * negative; over a picture or video it inverts whatever is underneath. It follows the pointer,
  * and drifts on its own when there is none. Place it inside the positioned box it should roam.
  */
-export function HeroLens({ text, textClassName }: Props) {
+export function HeroLens({ children, className }: Props) {
   const lensRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,13 +41,9 @@ export function HeroLens({ text, textClassName }: Props) {
   }, []);
 
   return (
-    <div ref={lensRef} className="hero-lens" aria-hidden="true">
-      <div className="hero-lens-fill" data-blend={text ? undefined : "true"}>
-        {text && (
-          <p dir="ltr" className={textClassName}>
-            {text}
-          </p>
-        )}
+    <div ref={lensRef} className={`hero-lens ${className ?? ""}`} aria-hidden="true">
+      <div className="hero-lens-fill" data-blend={children ? undefined : "true"}>
+        {children}
       </div>
     </div>
   );
